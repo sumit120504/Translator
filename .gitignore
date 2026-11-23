@@ -21,7 +21,8 @@
 .env.production.local
 !.env.example
 
-# Service account keys & credentials
+# Service account keys & credentials (Firebase / Google Cloud)
+*firebase-adminsdk*.json
 *service-account*.json
 *credentials*.json
 *.pem
@@ -45,6 +46,9 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
+firebase-debug.log*
+firestore-debug.log*
+ui-debug.log*
 
 # Vercel
 .vercel
@@ -61,6 +65,7 @@ next-env.d.ts
 .project
 .classpath
 .settings/
+*.code-workspace
 
 # macOS / Windows OS files
 .DS_Store
