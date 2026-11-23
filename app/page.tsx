@@ -63,7 +63,7 @@ export default function HomePage() {
       <div className="text-center space-y-3 pt-2 sm:pt-6">
         <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-indigo-50 text-indigo-700 dark:bg-indigo-950/70 dark:text-indigo-300 border border-indigo-200/60 dark:border-indigo-800/60 mb-2">
           <Sparkles className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400" />
-          <span>Auto-saves every word to Google Sheets</span>
+          <span>Auto-saves every word to Firebase Firestore</span>
         </div>
         <h1 className="text-4xl sm:text-5xl font-black text-slate-900 dark:text-white tracking-tight">
           Master English Words with{' '}
@@ -103,7 +103,7 @@ export default function HomePage() {
               href="/revise"
               className="text-xs font-semibold text-indigo-600 dark:text-indigo-400 hover:underline flex items-center gap-1"
             >
-              <span>View all in Sheet</span>
+              <span>View all saved words</span>
               <ArrowRight className="w-3 h-3" />
             </Link>
           </div>

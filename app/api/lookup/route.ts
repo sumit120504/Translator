@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { validateWordInput } from '@/lib/validate';
-import { findWord, incrementLookupCount, saveWord } from '@/lib/sheets';
+import { findWord, incrementLookupCount, saveWord } from '@/lib/firestore';
 import { getWordTranslation } from '@/lib/translate';
 import { LookupResponse } from '@/lib/types';
 

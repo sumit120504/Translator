@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { updateWordStatus, deleteWord } from '@/lib/sheets';
+import { updateWordStatus, deleteWord } from '@/lib/firestore';
 import { WordStatus } from '@/lib/types';
 
 export async function PATCH(

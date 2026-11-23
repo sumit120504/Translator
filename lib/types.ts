@@ -41,9 +41,10 @@ export interface TranslationResult {
 }
 
 export interface StorageStatus {
-  sheetsConfigured: boolean;
+  firestoreConfigured: boolean;
+  sheetsConfigured?: boolean;
   aiConfigured: boolean;
   activeProvider: string;
-  mode: 'google-sheets' | 'local-fallback';
+  mode: 'firebase-firestore' | 'local-fallback';
   totalWords: number;
 }

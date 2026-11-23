@@ -114,12 +114,12 @@ export default function ResultCard({ result, onStatusChange }: ResultCardProps) 
           {result.fromCache ? (
             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">
               <CheckCircle className="w-3.5 h-3.5" />
-              In your Sheet (Looked up {result.lookupCount || 1}x)
+              In your Vocabulary (Viewed {result.lookupCount || 1}x)
             </span>
           ) : (
             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-indigo-50 text-indigo-700 dark:bg-indigo-950/60 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800 animate-pulse">
               <Sparkles className="w-3.5 h-3.5" />
-              Saved to Sheet ✓
+              Saved to Firestore ✓
             </span>
           )}
 

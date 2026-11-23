@@ -1,22 +1,21 @@
 import { NextResponse } from 'next/server';
-import { isGoogleSheetsConfigured, getAllWords } from '@/lib/sheets';
+import { isFirestoreConfigured, getAllWords } from '@/lib/firestore';
 import { getActiveProviderName } from '@/lib/translate';
 
 export async function GET() {
   try {
-    const sheetsOk = isGoogleSheetsConfigured();
+    const firestoreOk = isFirestoreConfigured();
     const words = await getAllWords();
     const provider = getActiveProviderName();
     const openRouterOk = !!(process.env.OPENROUTER_API_KEY || process.env.OPEN_ROUTER_API_KEY);
 
     return NextResponse.json({
-      sheetsConfigured: sheetsOk,
-      storageMode: sheetsOk ? 'Google Sheets' : 'Local Fallback (.data/words.json)',
+      firestoreConfigured: firestoreOk,
+      storageMode: firestoreOk ? 'Firebase Firestore' : 'Local Fallback (.data/words.json)',
       activeProvider: provider,
       openRouterConfigured: openRouterOk,
       openRouterModel: process.env.OPENROUTER_MODEL || 'anthropic/claude-3.5-sonnet',
-      sheetId: process.env.GOOGLE_SHEET_ID ? 'Configured' : 'Not configured',
-      serviceAccount: process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL || 'Not configured',
+      firebaseProjectId: process.env.FIREBASE_PROJECT_ID || 'Not configured',
       totalWords: words.length,
     });
   } catch (error: any) {

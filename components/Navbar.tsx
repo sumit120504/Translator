@@ -14,7 +14,9 @@ import {
   X,
   FileSpreadsheet,
   CheckCircle2,
-  HardDrive
+  HardDrive,
+  Database,
+  Flame
 } from 'lucide-react';
 
 export default function Navbar() {
@@ -22,7 +24,8 @@ export default function Navbar() {
   const [darkMode, setDarkMode] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [storageStatus, setStorageStatus] = useState<{
-    sheetsConfigured: boolean;
+    firestoreConfigured?: boolean;
+    sheetsConfigured?: boolean;
     storageMode: string;
   } | null>(null);
 
@@ -112,20 +115,20 @@ export default function Navbar() {
             {storageStatus && (
               <div
                 title={
-                  storageStatus.sheetsConfigured
-                    ? 'Synced with Google Sheets'
-                    : 'Running in Local Storage mode (Add Google credentials to sync to Sheets)'
+                  (storageStatus.firestoreConfigured ?? storageStatus.sheetsConfigured)
+                    ? 'Connected to Firebase Firestore'
+                    : 'Running in Local Storage mode (Add Firebase credentials to sync to Firestore)'
                 }
                 className={`hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium border ${
-                  storageStatus.sheetsConfigured
-                    ? 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-400 dark:border-emerald-800'
-                    : 'bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950/40 dark:text-amber-400 dark:border-amber-800'
+                  (storageStatus.firestoreConfigured ?? storageStatus.sheetsConfigured)
+                    ? 'bg-amber-50 text-amber-700 border-amber-300 dark:bg-amber-950/40 dark:text-amber-300 dark:border-amber-800'
+                    : 'bg-slate-100 text-slate-700 border-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700'
                 }`}
               >
-                {storageStatus.sheetsConfigured ? (
+                {(storageStatus.firestoreConfigured ?? storageStatus.sheetsConfigured) ? (
                   <>
-                    <FileSpreadsheet className="w-3.5 h-3.5" />
-                    <span>Sheets Active</span>
+                    <Flame className="w-3.5 h-3.5 text-amber-500 fill-amber-500" />
+                    <span>Firestore Active</span>
                   </>
                 ) : (
                   <>

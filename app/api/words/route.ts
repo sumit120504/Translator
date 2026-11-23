@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getAllWords, saveWord } from '@/lib/sheets';
+import { getAllWords, saveWord } from '@/lib/firestore';
 import { WordStatus } from '@/lib/types';
 import { validateWordInput } from '@/lib/validate';
 import { getWordTranslation } from '@/lib/translate';

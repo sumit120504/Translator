@@ -6,7 +6,7 @@ import StatusBanner from '@/components/StatusBanner';
 export const metadata: Metadata = {
   title: 'WordLearner | English → Hindi Vocabulary Builder',
   description:
-    'Look up English words, get instant Hindi translations and Hindi meanings, and automatically sync them to your Google Sheet.',
+    'Look up English words, get instant Hindi translations and Hindi meanings, and automatically sync them to your Firebase Firestore database.',
 };
 
 export default function RootLayout({
@@ -25,7 +25,7 @@ export default function RootLayout({
         <footer className="border-t border-slate-200 dark:border-slate-800 py-6 text-center text-xs text-slate-400 dark:text-slate-500">
           <div className="max-w-6xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
             <span>WordLearner • English → Hindi Vocabulary Builder</span>
-            <span>Automatically saves lookups to Google Sheets</span>
+            <span>Automatically saves lookups to Firebase Firestore</span>
           </div>
         </footer>
       </body>
