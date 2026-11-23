@@ -4,12 +4,12 @@ import React, { useState } from 'react';
 import {
   Volume2,
   CheckCircle,
-  Clock,
   Sparkles,
   Copy,
   Check,
-  BookOpen,
-  ArrowRight
+  ArrowRight,
+  RotateCw,
+  Loader2
 } from 'lucide-react';
 import Link from 'next/link';
 import { LookupResponse, WordStatus } from '@/lib/types';
@@ -17,13 +17,15 @@ import { LookupResponse, WordStatus } from '@/lib/types';
 interface ResultCardProps {
   result: LookupResponse;
   onStatusChange?: (id: string, newStatus: WordStatus) => Promise<void>;
+  onRefresh?: (word: string) => Promise<void>;
 }
 
-export default function ResultCard({ result, onStatusChange }: ResultCardProps) {
+export default function ResultCard({ result, onStatusChange, onRefresh }: ResultCardProps) {
   const [isPlayingAudio, setIsPlayingAudio] = useState(false);
   const [copied, setCopied] = useState(false);
   const [currentStatus, setCurrentStatus] = useState<WordStatus>(result.status || 'new');
   const [isUpdatingStatus, setIsUpdatingStatus] = useState(false);
+  const [isRefreshingWord, setIsRefreshingWord] = useState(false);
 
   // Audio pronunciation function
   const playPronunciation = () => {
@@ -84,6 +86,16 @@ export default function ResultCard({ result, onStatusChange }: ResultCardProps) 
     }
   };
 
+  const handleReTranslate = async () => {
+    if (isRefreshingWord || !onRefresh) return;
+    setIsRefreshingWord(true);
+    try {
+      await onRefresh(result.word);
+    } finally {
+      setIsRefreshingWord(false);
+    }
+  };
+
   return (
     <div className="w-full max-w-2xl mx-auto mt-6 bg-white dark:bg-slate-800/90 rounded-3xl p-6 sm:p-8 shadow-xl border border-slate-200/80 dark:border-slate-700/80 transition-all">
       {/* Top Bar: Word, Part of Speech, Audio, and Saved Badge */}
@@ -109,18 +121,34 @@ export default function ResultCard({ result, onStatusChange }: ResultCardProps) 
           </button>
         </div>
 
-        {/* Saved Badge */}
+        {/* Saved Badge & Action Buttons */}
         <div className="flex items-center gap-2">
           {result.fromCache ? (
             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">
               <CheckCircle className="w-3.5 h-3.5" />
-              In your Vocabulary (Viewed {result.lookupCount || 1}x)
+              In your List (Viewed {result.lookupCount || 1}x)
             </span>
           ) : (
             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-indigo-50 text-indigo-700 dark:bg-indigo-950/60 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800 animate-pulse">
               <Sparkles className="w-3.5 h-3.5" />
               Saved to Firestore ✓
             </span>
+          )}
+
+          {/* Re-translate button */}
+          {onRefresh && (
+            <button
+              onClick={handleReTranslate}
+              disabled={isRefreshingWord}
+              title="Re-translate with AI for updated explanation"
+              className="p-2 rounded-lg text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-slate-100 dark:hover:bg-slate-700/60 transition-colors"
+            >
+              {isRefreshingWord ? (
+                <Loader2 className="w-4 h-4 animate-spin text-indigo-600" />
+              ) : (
+                <RotateCw className="w-4 h-4" />
+              )}
+            </button>
           )}
 
           <button

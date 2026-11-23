@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { validateWordInput } from '@/lib/validate';
 import { findWord, incrementLookupCount, saveWord } from '@/lib/firestore';
-import { getWordTranslation } from '@/lib/translate';
+import { getWordTranslation, isBoilerplateDefinition } from '@/lib/translate';
 import { LookupResponse } from '@/lib/types';
 
-// Rate limiting map (in-memory, simple IP based limit: 30 requests/min per IP)
+// Rate limiting map (in-memory, simple IP based limit: 40 requests/min per IP)
 const rateLimitMap = new Map<string, { count: number; resetTime: number }>();
 
 function isRateLimited(ip: string): boolean {
@@ -35,7 +35,7 @@ export async function POST(req: NextRequest) {
     }
 
     const body = await req.json().catch(() => ({}));
-    const { word } = body;
+    const { word, refresh = false } = body;
 
     const validation = validateWordInput(word);
     if (!validation.valid || !validation.normalized) {
@@ -47,9 +47,16 @@ export async function POST(req: NextRequest) {
 
     const normalized = validation.normalized;
 
-    // Step 1: Check if word is already saved in Sheet/storage
+    // Step 1: Check if word is already saved in Firestore/storage
     const existing = await findWord(normalized);
-    if (existing) {
+
+    // If existing word has valid, non-boilerplate definitions and refresh was not requested:
+    const hasBadDefinition =
+      existing &&
+      (isBoilerplateDefinition(existing.english_meaning) ||
+        isBoilerplateDefinition(existing.hindi_meaning));
+
+    if (existing && !refresh && !hasBadDefinition) {
       // Increment lookup counter
       const updated = await incrementLookupCount(existing.id);
       const hindiList = existing.hindi_translation
@@ -73,10 +80,10 @@ export async function POST(req: NextRequest) {
       return NextResponse.json(response);
     }
 
-    // Step 2: Fetch translation & definitions
+    // Step 2: Fetch translation & definitions using AI / OpenRouter
     const translationResult = await getWordTranslation(normalized);
 
-    // Step 3: Save new entry to Sheet/storage
+    // Step 3: Save or update entry in Firestore/storage
     const savedEntry = await saveWord({
       word: translationResult.word,
       part_of_speech: translationResult.partOfSpeech,
@@ -96,8 +103,8 @@ export async function POST(req: NextRequest) {
       example: savedEntry.example_sentence,
       saved: true,
       fromCache: false,
-      lookupCount: savedEntry.lookup_count,
-      status: savedEntry.status,
+      lookupCount: existing ? (existing.lookup_count || 1) + 1 : savedEntry.lookup_count,
+      status: existing ? existing.status : savedEntry.status,
       audioUrl: translationResult.audioUrl,
     };
 

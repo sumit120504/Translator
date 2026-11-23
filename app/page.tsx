@@ -23,7 +23,7 @@ export default function HomePage() {
     } catch {}
   }, []);
 
-  const handleSearch = async (word: string) => {
+  const handleSearch = async (word: string, refresh = false) => {
     setIsLoading(true);
     setError(null);
 
@@ -31,7 +31,7 @@ export default function HomePage() {
       const res = await fetch('/api/lookup', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ word }),
+        body: JSON.stringify({ word, refresh }),
       });
 
       const data = await res.json();
@@ -90,7 +90,7 @@ export default function HomePage() {
       )}
 
       {/* Result Card */}
-      {result && <ResultCard result={result} />}
+      {result && <ResultCard result={result} onRefresh={(w) => handleSearch(w, true)} />}
 
       {/* Recent Lookups (Section 10 of Blueprint: Recent 5 lookups below the card) */}
       {recentLookups.length > 0 && (
